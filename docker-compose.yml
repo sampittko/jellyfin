@@ -1,0 +1,22 @@
+name: jellyfin
+
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin:${JELLYFIN_VERSION}
+    extends:
+      file: hwaccel.yml
+      service: cuda
+    volumes:
+      - ${JELLYFIN_CONFIG_LOCATION}:/config
+      - ${JELLYFIN_CACHE_LOCATION}:/cache
+      - ${JELLYFIN_MEDIA_LOCATION}:/media
+    env_file:
+      - .env
+    ports:
+      - "8096:8096"
+    environment:
+      JELLYFIN_PublishedServerUrl: ${NAS_STATIC_IP}:8096
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
+    restart: unless-stopped
